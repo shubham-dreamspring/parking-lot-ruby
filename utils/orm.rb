@@ -36,4 +36,20 @@ class CustomOrm
       f.write(JSON.dump(file_data))
     end
   end
+
+  def self.delete_last_element(db_name = DB_EMPTY_SLOTS)
+    file_data = read_db_file(db_name: db_name)
+    file_data.pop
+    File.open("#{DB_DIR}/#{db_name}", "w") do |f|
+      f.write(JSON.dump(file_data))
+    end
+  end
+
+  def self.delete_element_by_key(db_name:, key:)
+    file_data = read_db_file(db_name: db_name)
+    file_data.delete(key)
+    File.open("#{DB_DIR}/#{db_name}", "w") do |f|
+      f.write(JSON.dump(file_data))
+    end
+  end
 end
