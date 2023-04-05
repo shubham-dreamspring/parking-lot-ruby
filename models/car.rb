@@ -5,12 +5,12 @@ class Car
   include ParkingLotContants
 
   attr_accessor :slot_id
-  attr_reader :registration_no
+  attr_reader :registration_no, :entry_time
 
   def initialize(registration_no)
     @registration_no = registration_no
     @slot_id = nil
-    @entry_time = Time.now
+    @entry_time = Time.now.to_i
     car_data = Car.find_by_registration_no(registration_no)
     if (car_data)
       @slot_id = car_data["slot_id"]

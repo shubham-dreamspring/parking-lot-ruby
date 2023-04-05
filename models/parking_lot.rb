@@ -1,5 +1,6 @@
 require_relative "../utils/orm"
 require_relative "../constants.rb"
+require_relative "../models/invoice.rb"
 
 class ParkingLot
   include ParkingLotContants
@@ -21,5 +22,6 @@ class ParkingLot
     CustomOrm.write_db_file(db_name: DB_EMPTY_SLOTS, data: car.slot_id)
     CustomOrm.delete_element_by_key(db_name: DB_CARS, key: car.registration_no)
     puts "Car has been unparked!"
+    Invoice.new(car).print_invoice
   end
 end
