@@ -24,9 +24,22 @@ class Invoice
   end
 
   def print_invoice
-    puts "Invoice ID -- #{@invoice_id}"
-    puts "Amount -- #{@amount}"
-    puts "Duration -- #{@exit_time - @entry_time}"
+    puts ParkingLotContants.INVOICE_PRINT_FORMAT(invoice_id: @invoice_id, entry_time: @entry_time, exit_time: @exit_time, registration_no: @registration_no, amount: @amount)
+  end
+
+  def self.get_all
+    invoices = CustomOrm.read_db_file(db_name: DB_INVOICES)
+    invoices.each { |invoice_id, invoice| puts ParkingLotContants.INVOICE_PRINT_FORMAT(invoice_id: invoice_id, entry_time: invoice["entry_time"], exit_time: invoice["exit_time"], registration_no: invoice["registration_no"], amount: invoice["amount"]) }
+  end
+
+  def self.get_by_id(invoice_id)
+    invoices = CustomOrm.read_db_file(db_name: DB_INVOICES)
+    invoice = invoices[invoice_id]
+    if invoice.nil?
+      puts ERR_INVOICE_NOT_FOUND
+      return
+    end
+    puts ParkingLotContants.INVOICE_PRINT_FORMAT(invoice_id: invoice_id, entry_time: invoice["entry_time"], exit_time: invoice["exit_time"], registration_no: invoice["registration_no"], amount: invoice["amount"])
   end
 
   private def cal_amount

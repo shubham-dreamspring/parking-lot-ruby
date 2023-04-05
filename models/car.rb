@@ -40,4 +40,11 @@ class Car
       raise ERR_INVALID_REGISTRATION_NO
     end
   end
+
+  def self.get_all
+    cars = CustomOrm.read_db_file(db_name: DB_CARS)
+    car_print = []
+    cars.each { |registration_no, car| car_print.push({ registration_no:, slot_id: car["slot_id"] }) }
+    puts ParkingLotContants.CARS_PRINT_FORMAT(car_print)
+  end
 end
