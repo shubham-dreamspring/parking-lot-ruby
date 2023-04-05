@@ -8,6 +8,7 @@ class Car
   attr_reader :registration_no, :entry_time
 
   def initialize(registration_no)
+    Car.validate_registration_no(registration_no)
     @registration_no = registration_no
     @slot_id = nil
     @entry_time = Time.now.to_i
@@ -32,5 +33,11 @@ class Car
       "entry_time" => @entry_time,
     } }
     CustomOrm.write_db_file(db_name: DB_CARS, data: car)
+  end
+
+  def self.validate_registration_no(registration_no)
+    unless Regexp.new(/[a-zA-Z]{2}[a-zA-Z0-9]{8}/).match?(registration_no)
+      raise ERR_INVALID_REGISTRATION_NO
+    end
   end
 end
