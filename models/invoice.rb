@@ -1,6 +1,9 @@
-require_relative "../constants.rb"
-require_relative "../utils/orm.rb"
+# frozen_string_literal: true
 
+require_relative '../constants'
+require_relative '../utils/orm'
+
+# Class for Invoice Model
 class Invoice
   include ParkingLotContants
 
@@ -15,34 +18,48 @@ class Invoice
 
   def push_to_db
     invoice = { @invoice_id => {
-      "registration_no" => @registration_no,
-      "entry_time" => @entry_time,
-      "exit_time" => @exit_time,
-      "amount" => @amount,
+      'registration_no' => @registration_no,
+      'entry_time' => @entry_time,
+      'exit_time' => @exit_time,
+      'amount' => @amount
     } }
     CustomOrm.write_db_file(db_name: DB_INVOICES, data: invoice)
   end
 
   def print_invoice
-    puts ParkingLotContants.INVOICE_PRINT_FORMAT(invoice_id: @invoice_id, entry_time: @entry_time, exit_time: @exit_time, registration_no: @registration_no, amount: @amount)
+    puts ParkingLotContants.INVOICE_PRINT_FORMAT(invoice_id: @invoice_id,
+                                                 entry_time: @entry_time,
+                                                 exit_time: @exit_time,
+                                                 registration_no: @registration_no,
+                                                 amount: @amount)
   end
 
-  def self.get_all
+  def self.find_all
     invoices = CustomOrm.read_db_file(db_name: DB_INVOICES)
-    invoices.each { |invoice_id, invoice| puts ParkingLotContants.INVOICE_PRINT_FORMAT(invoice_id: invoice_id, entry_time: invoice["entry_time"], exit_time: invoice["exit_time"], registration_no: invoice["registration_no"], amount: invoice["amount"]) }
+    invoices.each do |invoice_id, invoice|
+      puts ParkingLotContants.INVOICE_PRINT_FORMAT(invoice_id: invoice_id,
+                                                   entry_time: invoice['entry_time'],
+                                                   exit_time: invoice['exit_time'],
+                                                   registration_no: invoice['registration_no'],
+                                                   amount: invoice['amount'])
+    end
   end
 
-  def self.get_by_id(invoice_id)
+  def self.find_by_id(invoice_id)
     invoices = CustomOrm.read_db_file(db_name: DB_INVOICES)
     invoice = invoices[invoice_id]
     if invoice.nil?
       puts ERR_INVOICE_NOT_FOUND
       return
     end
-    puts ParkingLotContants.INVOICE_PRINT_FORMAT(invoice_id: invoice_id, entry_time: invoice["entry_time"], exit_time: invoice["exit_time"], registration_no: invoice["registration_no"], amount: invoice["amount"])
+    puts ParkingLotContants.INVOICE_PRINT_FORMAT(invoice_id: invoice_id,
+                                                 entry_time: invoice['entry_time'],
+                                                 exit_time: invoice['exit_time'],
+                                                 registration_no: invoice['registration_no'],
+                                                 amount: invoice['amount'])
   end
 
-  private def cal_amount
+  def cal_amount
     case @exit_time - @entry_time
     when 0..10 then MINIMUM_PARKING_CHARGE
     when 10..30 then CHARGE_MORE_THAN_10_SEC
@@ -50,4 +67,6 @@ class Invoice
     else CHARGE_MORE_THAN_60_SEC
     end
   end
+
+  private :cal_amount
 end
