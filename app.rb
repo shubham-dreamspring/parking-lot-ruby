@@ -1,21 +1,23 @@
 # frozen_string_literal: true
 
-require_relative 'models/car'
-require_relative 'models/parking_lot'
-require_relative 'models/invoice'
-# car = Car.new("UP12345678")
-# ParkingLot.new.unpark(car)
+require 'optparse'
+require_relative 'controller/controller'
 
-car = Car.new('MP12345678')
-ParkingLot.new.park(car)
-
-# car = Car.new("AA3A567890")
-# ParkingLot.new.park(car);
-
-# car = Car.new("BG12345678")
-# ParkingLot.new.park(car)
-
-# Invoice.find_all
-Invoice.find_by_id('IN1680674937')
-
-# Car.find_all
+controller = Controller.new
+OptionParser.new do |opts|
+  opts.banner = "===========================================
+        WELCOME TO PARKING LOT
+==========================================="
+  opts.on('-p', '--park REGISTRATION_NO', ' Park your car with registration no') do |reg_no|
+    controller.park reg_no
+  end
+  opts.on('-u', '--unpark REGISTRATION_NO', ' Unpark your car with registration no') do |reg_no|
+    controller.unpark reg_no
+  end
+  opts.on('-i', '--invoice [INVOICE_ID]', ' Get Invoices') do |ext|
+    controller.invoice(ext)
+  end
+  opts.on('-c', '--cars', ' Get all cars in parking lot') do
+    controller.car
+  end
+end.parse!

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../utils/orm'
-require_relative '../constants'
+require_relative '../app_constants'
 
 # Class for Car Model
 class Car

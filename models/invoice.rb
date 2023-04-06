@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../constants'
+require_relative '../app_constants'
 require_relative '../utils/orm'
 
 # Class for Invoice Model
@@ -36,6 +36,10 @@ class Invoice
 
   def self.find_all
     invoices = CustomOrm.read_db_file(db_name: DB_INVOICES)
+    if invoices.empty?
+      puts ERR_NO_INVOICES
+      return
+    end
     invoices.each do |invoice_id, invoice|
       puts ParkingLotContants.INVOICE_PRINT_FORMAT(invoice_id: invoice_id,
                                                    entry_time: invoice['entry_time'],

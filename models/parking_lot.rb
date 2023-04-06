@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../utils/orm'
-require_relative '../constants'
+require_relative '../app_constants'
 require_relative '../models/invoice'
 
 # Model for Parking Lot
@@ -18,6 +18,8 @@ class ParkingLot
   end
 
   def park(car)
+    raise "#{ERR_CAR_ALREADY_PARKED} at #{car.slot_id}" if car.slot_id
+
     car.slot_id = ParkingLot.fetch_empty_slot
     car.push_to_db
     puts "#{SUCCESS_PARK_CAR} #{car.slot_id}"

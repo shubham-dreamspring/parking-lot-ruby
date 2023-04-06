@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+# frozen_string_literal: false
 
 # module conatining constants used in app
 module ParkingLotContants
@@ -14,11 +14,14 @@ module ParkingLotContants
   DB_INVOICES = 'invoices.json'
 
   ERR_NO_EMPTY_SLOTS = 'NO SLOTS AVAILABLE!! Please Come back Later'
-  ERR_INVALID_REGISTRATION_NO = 'Invalid Registration number!! Please enter 10 character long with initial two character
-  alphabet with no spaces and special characters'
+  ERR_INVALID_REGISTRATION_NO = 'Invalid Registration number!!
+  Please enter 10 character long
+  with initial two character alphabets
+  with no spaces and special characters'
   ERR_CAR_NOT_FOUND = 'It seems car has not been parked'
   ERR_INVOICE_NOT_FOUND = 'No invoice with this id found!!'
-
+  ERR_CAR_ALREADY_PARKED = 'Car is already parked'
+  ERR_NO_INVOICES = 'No invoice yet generated !!'
   SUCCESS_PARK_CAR = 'Car has been parked at'
   SUCCESS_UNPARK_CAR = "Car has been unparked! \nHave a good day :)"
 
@@ -37,14 +40,14 @@ module ParkingLotContants
   end
 
   def self.CARS_PRINT_FORMAT(cars)
-    <<~END_OF_STRING
+    "
       ============================================
              Found #{cars.length} cars
       ============================================
       Registration Number ===>  Slot
       --------------------------------------------
-      #{cars.reduce('') { |res, car| res << "#{car[:registration_no]}          ===>  #{car[:slot_id]}\n" }}
+      #{cars.reduce('') { |res, car| res << "#{car[:registration_no]}          ===>  #{car[:slot_id]}\n      " }}
       ============================================
-    END_OF_STRING
+    "
   end
 end

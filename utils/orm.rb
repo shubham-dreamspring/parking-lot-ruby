@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'json'
-require_relative '../constants'
+require_relative '../app_constants'
 
 # Class for Invoice Model
 class CustomOrm
@@ -9,14 +9,18 @@ class CustomOrm
 
   def self.initialise_db
     Dir.mkdir(DB_DIR.to_s) unless File.exist?(DB_DIR.to_s)
+    return unless Dir.empty?(DB_DIR.to_s)
+
     File.open("#{DB_DIR}/#{DB_CARS}", 'w') do |f|
       f.write(JSON.generate({}))
     end
+
     File.open("#{DB_DIR}/#{DB_EMPTY_SLOTS}", 'w') do |f|
       a = []
       (1..TOTAL_CAPACITY_OF_PARKING_LOT).each { |n| a << "A#{n}" }
       f.write(JSON.generate(a))
     end
+
     File.open("#{DB_DIR}/#{DB_INVOICES}", 'w') { |f| f.write(JSON.generate({})) }
   end
 
