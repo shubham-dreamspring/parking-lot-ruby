@@ -4,10 +4,15 @@ require_relative '../models/car'
 require_relative '../models/parking_lot'
 require_relative '../models/invoice'
 require_relative '../utils/orm'
-
+require_relative '../app_constants'
 # Controller class
 class Controller
+  include ParkingLotContants
   def initialize
+    if ENV['MODE'] == 'test'
+      CustomOrm.initialise_db(TEST_DB_DIR)
+      return
+    end
     CustomOrm.initialise_db
   end
 

@@ -11,7 +11,7 @@ class Invoice
     @registration_no = car.registration_no
     @entry_time = car.entry_time
     @exit_time = Time.now.to_i
-    @amount = cal_amount
+    @amount = Invoice.cal_amount(@exit_time - @entry_time)
     @invoice_id = "IN#{@exit_time}"
     push_to_db
   end
@@ -61,16 +61,15 @@ class Invoice
                                                  exit_time: invoice['exit_time'],
                                                  registration_no: invoice['registration_no'],
                                                  amount: invoice['amount'])
+    invoice
   end
 
-  def cal_amount
-    case @exit_time - @entry_time
+  def self.cal_amount(duration)
+    case duration
     when 0..10 then MINIMUM_PARKING_CHARGE
     when 10..30 then CHARGE_MORE_THAN_10_SEC
     when 30..60 then CHARGE_MORE_THAN_30_SEC
     else CHARGE_MORE_THAN_60_SEC
     end
   end
-
-  private :cal_amount
 end
