@@ -27,10 +27,7 @@ ruby app.rb -i | --invoice
 ruby app.rb -i | --invoice INVOICE_ID
 ```
 
-### For test env
+### For testing
 ```
-MODE="test" ruby app.rb -i | --invoice INVOICE_ID
-MODE="test" ruby app.rb -p | --park REGISTRATION_NUMBER
-MODE="test" ruby app.rb -u | --unpark REGISTRATION_NUMBER
-MODE="test" ruby app.rb -c | --car
+rspec
 ```
