@@ -6,4 +6,5 @@ gem "json"
 
 group :development do
   gem "rubocop"
+  gem "debug"
 end

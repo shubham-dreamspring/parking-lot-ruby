@@ -2,19 +2,19 @@
 
 # module conatining constants used in app
 module ParkingLotContants
-  TEST_MODE = ENV['MODE'] || false
+  TEST_MODE = ENV['MODE'] == 'test'
   TOTAL_CAPACITY_OF_PARKING_LOT = 10
   MINIMUM_PARKING_CHARGE = 100
   CHARGE_MORE_THAN_10_SEC = 200
   CHARGE_MORE_THAN_30_SEC = 300
   CHARGE_MORE_THAN_60_SEC = 500
 
-  DB_DIR = TEST_MODE ? 'db-test' : 'db'
+  TEST_DB_DIR = 'db-test'
+
+  DB_DIR = TEST_MODE ? TEST_DB_DIR : 'db'
   DB_CARS = 'cars.json'
   DB_EMPTY_SLOTS = 'empty_slots.json'
   DB_INVOICES = 'invoices.json'
-
-  TEST_DB_DIR = 'db-test'
 
   ERR_NO_EMPTY_SLOTS = 'NO SLOTS AVAILABLE!! Please Come back Later'
   ERR_INVALID_REGISTRATION_NO = 'Invalid Registration number!!

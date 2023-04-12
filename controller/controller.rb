@@ -9,10 +9,6 @@ require_relative '../app_constants'
 class Controller
   include ParkingLotContants
   def initialize
-    if ENV['MODE'] == 'test'
-      CustomOrm.initialise_db(TEST_DB_DIR)
-      return
-    end
     CustomOrm.initialise_db
   end
 

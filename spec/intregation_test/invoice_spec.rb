@@ -5,7 +5,7 @@ require_relative '../../utils/orm'
 
 describe Invoice do
   before(:all) do
-    CustomOrm.initialise_db TEST_DB_DIR
+    CustomOrm.initialise_db
   end
   before do
     allow(Time).to receive(:now).and_return(Time.at(123_456_789))
