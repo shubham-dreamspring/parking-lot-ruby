@@ -1,36 +1,53 @@
-# frozen_string_literal: true
+require_relative 'car'
+require_relative 'slot'
+require_relative 'invoice'
+require_relative '../utils/custom_errors'
 
-require_relative '../utils/orm'
-require_relative '../app_constants'
-require_relative '../models/invoice'
-
-# Model for Parking Lot
 class ParkingLot
-  include ParkingLotContants
+  include CustomErrors
 
-  def self.fetch_empty_slot
-    slots = CustomOrm.read_db_file(db_name: DB_EMPTY_SLOTS)
-    raise ERR_NO_EMPTY_SLOTS if slots.empty?
-
-    slot = slots.pop
-    CustomOrm.delete_last_element
-    slot
+  def self.initialise_db
+    CustomOrm.initialise_db
   end
 
-  def park(car)
-    raise "#{ERR_CAR_ALREADY_PARKED} at #{car.slot_id}" if car.slot_id
-
-    car.slot_id = ParkingLot.fetch_empty_slot
-    car.push_to_db
-    puts "#{SUCCESS_PARK_CAR} #{car.slot_id}"
+  def self.reset
+    Car.reset
+    Slot.reset
   end
 
-  def unpark(car)
-    raise ERR_CAR_NOT_FOUND if car.slot_id.nil?
+  def self.park(car)
+    car.create
 
-    CustomOrm.write_db_file(db_name: DB_EMPTY_SLOTS, data: car.slot_id)
-    CustomOrm.delete_element_by_key(db_name: DB_CARS, key: car.registration_no)
-    puts SUCCESS_UNPARK_CAR
-    Invoice.new(car).print_invoice
+    slot = Slot.empty_slot
+    slot.vehicle_id = car.id
+    slot.timestamp = Time.now
+    slot.update
+
+    {
+      registration_no: car.registration_no,
+      park_timestamp: slot.timestamp,
+      slot_id: slot.id,
+    }
+  end
+
+  def self.unpark(car)
+    raise CarNotFound, 'Car is not parked' unless car.already_exist?
+
+    slot = Slot.find('vehicle_id', car.id)
+    car_parked_time = slot.timestamp
+    Slot.vacant_slot(slot)
+    Car.delete('id', car.id)
+    Invoice.new(car.registration_no, car_parked_time)
+  end
+
+  def self.parked_cars(sort_property = nil, limit = nil)
+
+    slots = Slot.filled_slot(sort_property, limit)
+    slots.map do |slot|
+      {
+        slot_id: slot.id,
+        registration_no: slot.car.registration_no,
+      }
+    end
   end
 end

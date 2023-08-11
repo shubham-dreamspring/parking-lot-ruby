@@ -1,7 +1,7 @@
 require_relative '../../models/Invoice'
 require_relative '../../models/Car'
 
-require_relative '../../utils/orm'
+require_relative '../../utils/custom_orm'
 
 describe Invoice do
   before(:all) do

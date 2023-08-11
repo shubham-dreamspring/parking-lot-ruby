@@ -17,7 +17,7 @@
 ENV['MODE'] = 'test'
 
 require_relative '../app_constants'
-require_relative '../utils/orm'
+require_relative '../utils/custom_orm'
 
 include ParkingLotContants
 RSpec.configure do |config|

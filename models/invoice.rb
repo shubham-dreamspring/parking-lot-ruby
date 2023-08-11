@@ -1,29 +1,27 @@
 # frozen_string_literal: true
 
 require_relative '../app_constants'
-require_relative '../utils/orm'
-
+require_relative '../utils/custom_orm'
+require 'time'
 # Class for Invoice Model
-class Invoice
+class Invoice < CustomOrm
   include ParkingLotContants
 
-  def initialize(car)
-    @registration_no = car.registration_no
-    @entry_time = car.entry_time
-    @exit_time = Time.now.to_i
-    @amount = Invoice.cal_amount(@exit_time - @entry_time)
-    @invoice_id = "IN#{@exit_time}"
-    push_to_db
+  def self.doc
+    DB_INVOICES
   end
 
-  def push_to_db
-    invoice = { @invoice_id => {
-      'registration_no' => @registration_no,
-      'entry_time' => @entry_time,
-      'exit_time' => @exit_time,
-      'amount' => @amount
-    } }
-    CustomOrm.write_db_file(db_name: DB_INVOICES, data: invoice)
+  def doc
+    DB_INVOICES
+  end
+
+  def initialize(registration_no, entry_time)
+    @registration_no = registration_no
+    @entry_time = Time.parse(entry_time).to_i
+    @exit_time = Time.now.to_i
+    @amount = Invoice.cal_amount(@exit_time - @entry_time)
+    @invoice_id = UUID.new.generate
+    create
   end
 
   def print_invoice
@@ -35,13 +33,9 @@ class Invoice
   end
 
   def self.find_all
-    invoices = CustomOrm.read_db_file(db_name: DB_INVOICES)
-    if invoices.empty?
-      puts ERR_NO_INVOICES
-      return
-    end
-    invoices.each do |invoice_id, invoice|
-      puts ParkingLotContants.INVOICE_PRINT_FORMAT(invoice_id: invoice_id,
+    invoices = super
+    invoices.each do |invoice|
+      puts ParkingLotContants.INVOICE_PRINT_FORMAT(invoice_id: invoice['invoice_id'],
                                                    entry_time: invoice['entry_time'],
                                                    exit_time: invoice['exit_time'],
                                                    registration_no: invoice['registration_no'],
@@ -49,13 +43,10 @@ class Invoice
     end
   end
 
-  def self.find_by_id(invoice_id)
-    invoices = CustomOrm.read_db_file(db_name: DB_INVOICES)
-    invoice = invoices[invoice_id]
-    if invoice.nil?
-      puts ERR_INVOICE_NOT_FOUND
-      return
-    end
+  def self.find(invoice_id)
+    invoice = super('invoice_id', invoice_id)
+    raise ERR_INVOICE_NOT_FOUND if invoice.nil?
+
     puts ParkingLotContants.INVOICE_PRINT_FORMAT(invoice_id: invoice_id,
                                                  entry_time: invoice['entry_time'],
                                                  exit_time: invoice['exit_time'],

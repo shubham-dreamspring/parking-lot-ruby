@@ -13,7 +13,7 @@ module ParkingLotContants
 
   DB_DIR = TEST_MODE ? TEST_DB_DIR : 'db'
   DB_CARS = 'cars.json'
-  DB_EMPTY_SLOTS = 'empty_slots.json'
+  DB_SLOTS = 'slots.json'
   DB_INVOICES = 'invoices.json'
 
   ERR_NO_EMPTY_SLOTS = 'NO SLOTS AVAILABLE!! Please Come back Later'
@@ -23,8 +23,10 @@ module ParkingLotContants
   with no spaces and special characters'
   ERR_CAR_NOT_FOUND = 'It seems car has not been parked'
   ERR_INVOICE_NOT_FOUND = 'No invoice with this id found!!'
+  ERR_RECORD_NOT_FOUND = 'No Record found'
   ERR_CAR_ALREADY_PARKED = 'Car is already parked'
   ERR_NO_INVOICES = 'No invoice yet generated !!'
+  ERR_INVALID_INPUT = 'Invalid Input'
   SUCCESS_PARK_CAR = 'Car has been parked at'
   SUCCESS_UNPARK_CAR = "Car has been unparked! \nHave a good day "
 

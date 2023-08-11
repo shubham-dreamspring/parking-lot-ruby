@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../../utils/orm'
+require_relative '../../utils/custom_orm'
 require 'fileutils'
 
 
