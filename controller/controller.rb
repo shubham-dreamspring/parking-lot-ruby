@@ -7,7 +7,7 @@ require_relative '../utils/custom_orm'
 require_relative '../app_constants'
 # Controller class
 class Controller
-  include ParkingLotContants
+  include ParkingLotConstants
 
   def initialize
 
@@ -19,7 +19,7 @@ class Controller
   end
 
   def park(reg_no)
-    car = Car.new(reg_no)
+    car = Car.new(registration_no: reg_no)
     car_details = ParkingLot.park(car)
     puts "#{SUCCESS_PARK_CAR} #{car_details[:slot_id]}"
   rescue RuntimeError => e
@@ -27,7 +27,7 @@ class Controller
   end
 
   def unpark(reg_no)
-    car = Car.new(reg_no)
+    car = Car.new(registration_no: reg_no)
     invoice = ParkingLot.unpark(car)
     invoice.print_invoice
     puts SUCCESS_UNPARK_CAR
@@ -37,16 +37,18 @@ class Controller
   end
 
   def invoice(invoice_id)
-    return Invoice.find_all if invoice_id.nil?
+    return Invoice.find_all.map(&:print_invoice) if invoice_id.nil?
 
-    Invoice.find(invoice_id)
+    invoice = Invoice.find('id', invoice_id)
+    invoice&.print_invoice
+    raise RecordNotFound, 'Invoice is not there with this id' if invoice.nil?
   rescue RuntimeError => e
     puts e
   end
 
   def car
-    car = ParkingLot.parked_cars
-    puts ParkingLotContants.CARS_PRINT_FORMAT(car)
+    cars = ParkingLot.parked_cars
+    puts ParkingLotConstants.CARS_PRINT_FORMAT(cars)
   rescue RuntimeError => e
     puts e
   end

@@ -19,9 +19,7 @@ class ParkingLot
     car.create
 
     slot = Slot.empty_slot
-    slot.vehicle_id = car.id
-    slot.timestamp = Time.now
-    slot.update
+    slot.occupy_slot(car.id)
 
     {
       registration_no: car.registration_no,
@@ -33,16 +31,19 @@ class ParkingLot
   def self.unpark(car)
     raise CarNotFound, 'Car is not parked' unless car.already_exist?
 
+    car = Car.find('registration_no', car.registration_no)
     slot = Slot.find('vehicle_id', car.id)
+    raise RecordNotFound, 'No slot with this car found!' if slot.nil?
+
     car_parked_time = slot.timestamp
-    Slot.vacant_slot(slot)
+    slot.vacant_slot
     Car.delete('id', car.id)
-    Invoice.new(car.registration_no, car_parked_time)
+    Invoice.new(registration_no: car.registration_no, entry_time: car_parked_time)
   end
 
   def self.parked_cars(sort_property = nil, limit = nil)
 
-    slots = Slot.filled_slot(sort_property, limit)
+    slots = Slot.filled_slots(sort_property, limit)
     slots.map do |slot|
       {
         slot_id: slot.id,

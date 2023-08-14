@@ -5,7 +5,7 @@ require_relative 'adapter'
 require 'linguistics'
 
 class CustomOrm
-  include ParkingLotContants
+  include ParkingLotConstants
   Linguistics.use('en')
 
   def self.doc
@@ -31,10 +31,14 @@ class CustomOrm
   end
 
   def self.find_all(sort_property = nil, limit = nil)
-    Adapter.read("#{DB_DIR}/#{doc}") do |data|
+    instances = Adapter.read("#{DB_DIR}/#{doc}") do |data|
       data = data.sort { |x, y| y[sort_property] - x[sort_property] } if sort_property
       data = data.slice(0, 3) if limit
       data
+    end
+    instances.map do |instance|
+      instance.transform_keys!(&:to_sym)
+      new(**instance)
     end
   end
 
@@ -47,9 +51,13 @@ class CustomOrm
   end
 
   def self.find(property_name, property_value)
-    Adapter.read("#{DB_DIR}/#{doc}") do |data|
+    instance = Adapter.read("#{DB_DIR}/#{doc}") do |data|
       data.find { |c| c[property_name] == property_value }
     end
+    return nil if instance.nil?
+
+    instance.transform_keys!(&:to_sym)
+    new(**instance)
   end
 
   def create

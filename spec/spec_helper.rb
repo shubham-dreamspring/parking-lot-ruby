@@ -18,12 +18,17 @@ ENV['MODE'] = 'test'
 
 require_relative '../app_constants'
 require_relative '../utils/custom_orm'
-
-include ParkingLotContants
+require_relative '../utils/custom_errors'
+require_relative '../models/parking_lot'
+include ParkingLotConstants
+include CustomErrors
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
+  config.before(:suite) do
+    ParkingLot.initialise_db
+  end
   config.after(:suite) { FileUtils.remove_dir(TEST_DB_DIR) if File.exist?(TEST_DB_DIR) }
   config.expect_with :rspec do |expectations|
     # This option will default to `true` in RSpec 4. It makes the `description`

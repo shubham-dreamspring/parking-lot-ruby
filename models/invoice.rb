@@ -5,45 +5,23 @@ require_relative '../utils/custom_orm'
 require 'time'
 # Class for Invoice Model
 class Invoice < CustomOrm
-  include ParkingLotContants
-  def initialize(registration_no, entry_time)
+  include ParkingLotConstants
+
+  def initialize(registration_no:, entry_time:, exit_time: nil, amount: nil, id: nil)
     @registration_no = registration_no
-    @entry_time = Time.parse(entry_time).to_i
-    @exit_time = Time.now.to_i
-    @amount = Invoice.cal_amount(@exit_time - @entry_time)
-    @invoice_id = UUID.new.generate
+    @entry_time = Integer(entry_time) rescue false  ? entry_time : Time.parse(entry_time).to_i
+    @exit_time = exit_time || Time.now.to_i
+    @amount = amount || Invoice.cal_amount(@exit_time - @entry_time)
+    @id = id || UUID.new.generate
     create
   end
 
   def print_invoice
-    puts ParkingLotContants.INVOICE_PRINT_FORMAT(invoice_id: @invoice_id,
+    puts ParkingLotConstants.INVOICE_PRINT_FORMAT(id: @id,
                                                  entry_time: @entry_time,
                                                  exit_time: @exit_time,
                                                  registration_no: @registration_no,
                                                  amount: @amount)
-  end
-
-  def self.find_all
-    invoices = super
-    invoices.each do |invoice|
-      puts ParkingLotContants.INVOICE_PRINT_FORMAT(invoice_id: invoice['invoice_id'],
-                                                   entry_time: invoice['entry_time'],
-                                                   exit_time: invoice['exit_time'],
-                                                   registration_no: invoice['registration_no'],
-                                                   amount: invoice['amount'])
-    end
-  end
-
-  def self.find(invoice_id)
-    invoice = super('invoice_id', invoice_id)
-    raise ERR_INVOICE_NOT_FOUND if invoice.nil?
-
-    puts ParkingLotContants.INVOICE_PRINT_FORMAT(invoice_id: invoice_id,
-                                                 entry_time: invoice['entry_time'],
-                                                 exit_time: invoice['exit_time'],
-                                                 registration_no: invoice['registration_no'],
-                                                 amount: invoice['amount'])
-    invoice
   end
 
   def self.cal_amount(duration)

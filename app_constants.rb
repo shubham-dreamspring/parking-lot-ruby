@@ -1,9 +1,10 @@
 # frozen_string_literal: false
 
 # module conatining constants used in app
-module ParkingLotContants
+module ParkingLotConstants
   TEST_MODE = ENV['MODE'] == 'test'
   TOTAL_CAPACITY_OF_PARKING_LOT = 10
+
   MINIMUM_PARKING_CHARGE = 100
   CHARGE_MORE_THAN_10_SEC = 200
   CHARGE_MORE_THAN_30_SEC = 300
@@ -12,6 +13,9 @@ module ParkingLotContants
   TEST_DB_DIR = 'db-test'
 
   DB_DIR = TEST_MODE ? TEST_DB_DIR : 'db'
+  DB_CARS = 'cars.json'
+  DB_SLOTS = 'slots.json'
+  DB_INVOICES = 'invoices.json'
   DB_FILE_FORMAT = '.json'
   ERR_NO_EMPTY_SLOTS = 'NO SLOTS AVAILABLE!! Please Come back Later'
   ERR_INVALID_REGISTRATION_NO = 'Invalid Registration number!!
@@ -27,10 +31,10 @@ module ParkingLotContants
   SUCCESS_PARK_CAR = 'Car has been parked at'
   SUCCESS_UNPARK_CAR = "Car has been unparked! \nHave a good day "
 
-  def self.INVOICE_PRINT_FORMAT(invoice_id:, registration_no:, amount:, exit_time:, entry_time:)
+  def self.INVOICE_PRINT_FORMAT(id:, registration_no:, amount:, exit_time:, entry_time:)
     "
       ============================================
-           INVOICE (id :- #{invoice_id})
+           INVOICE (id :- #{id})
 
         Registration Number: #{registration_no}
         AMOUNT: #{amount}

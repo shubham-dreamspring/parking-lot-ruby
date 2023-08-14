@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 require_relative '../utils/custom_errors'
+require_relative '../utils/custom_orm'
 
 class Slot < CustomOrm
   include CustomErrors
-  attr_accessor :id, :timestamp, :vehicle_id
+  attr_reader :id, :timestamp, :vehicle_id
 
-  def initialize(id, vehicle_id = nil, timestamp = nil)
+  def initialize(id:, vehicle_id: nil, timestamp: nil)
     @id = id
     @timestamp = timestamp
     @vehicle_id = vehicle_id
@@ -16,44 +17,32 @@ class Slot < CustomOrm
   end
 
   def car
-    car = Car.find('id', @vehicle_id)
-    raise CarNotFound, 'car is not parked with this id' if car.nil?
-
-    Car.new(car['registration_no'], car['id'])
+    Car.find('id', @vehicle_id)
   end
 
   def self.empty_slot
     slots = find_all
-    empty_slots = slots.select(&:empty?)
-    raise CustomErrors::NoEmptySlot if (empty_slots.empty?)
+    slot = slots.find(&:empty?)
+    raise NoEmptySlot if slot.nil?
 
-    Slot.new(empty_slots.first.id, empty_slots.first.timestamp, empty_slots.first.vehicle_id)
+    slot
   end
 
-  def self.filled_slot(sort_property = nil, limit = nil)
+  def self.filled_slots(sort_property = nil, limit = nil)
     slots = find_all(sort_property, limit)
-    slots
-      .filter { |slot| !slot.empty? }
+    slots.filter { |slot| !slot.empty? }
   end
 
-  def self.find_all(sort_property = nil, limit = nil)
-    slots = super(sort_property, limit)
-    slots.map { |slot| Slot.new(slot['id'], slot['vehicle_id'], slot['timestamp']) }
+  def vacant_slot
+    @timestamp = nil
+    @vehicle_id = nil
+    update
   end
 
-  def self.find(property_name, property_value)
-    slot = super(property_name, property_value)
-
-    raise RecordNotFound, 'No slot found !' if slot.nil?
-
-    Slot.new(slot['id'], slot['vehicle_id'], slot['timestamp'])
-
-  end
-
-  def self.vacant_slot(slot)
-    slot.timestamp = nil
-    slot.vehicle_id = nil
-    slot.update
+  def occupy_slot(car_id)
+    @vehicle_id = car_id
+    @timestamp = Time.now
+    update
   end
 
   def self.reset
