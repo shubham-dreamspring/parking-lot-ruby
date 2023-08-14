@@ -9,13 +9,6 @@ require 'uuid'
 class Car < CustomOrm
   include ParkingLotContants
   include CustomErrors
-  def self.doc
-    DB_CARS
-  end
-
-  def doc
-    DB_CARS
-  end
 
   attr_reader :registration_no, :id
 

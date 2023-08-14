@@ -1,11 +1,12 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-gem "rspec"
-gem "pristine"
-gem "json"
-gem "uuid"
+gem 'json'
+gem 'linguistics', '~> 2.1'
+gem 'pristine'
+gem 'rspec'
+gem 'uuid'
 
 group :development do
-  gem "rubocop"
-  gem "debug"
+  gem 'debug'
+  gem 'rubocop'
 end

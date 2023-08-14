@@ -12,10 +12,7 @@ module ParkingLotContants
   TEST_DB_DIR = 'db-test'
 
   DB_DIR = TEST_MODE ? TEST_DB_DIR : 'db'
-  DB_CARS = 'cars.json'
-  DB_SLOTS = 'slots.json'
-  DB_INVOICES = 'invoices.json'
-
+  DB_FILE_FORMAT = '.json'
   ERR_NO_EMPTY_SLOTS = 'NO SLOTS AVAILABLE!! Please Come back Later'
   ERR_INVALID_REGISTRATION_NO = 'Invalid Registration number!!
   Please enter 10 character long

@@ -2,19 +2,22 @@
 
 require_relative '../app_constants'
 require_relative 'adapter'
-# Class for Invoice Model
+require 'linguistics'
+
 class CustomOrm
   include ParkingLotContants
+  Linguistics.use('en')
+
   def self.doc
-    raise NoMethodError
+    name.to_s.downcase.en.plural + DB_FILE_FORMAT
+  end
+
+  def doc
+    self.class.name.to_s.downcase.en.plural + DB_FILE_FORMAT
   end
 
   def validate
     true
-  end
-
-  def doc
-    raise NoMethodError
   end
 
   def self.initialise_db(db_dir = DB_DIR)

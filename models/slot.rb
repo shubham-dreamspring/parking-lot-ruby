@@ -3,15 +3,6 @@ require_relative '../utils/custom_errors'
 
 class Slot < CustomOrm
   include CustomErrors
-
-  def self.doc
-    DB_SLOTS
-  end
-
-  def doc
-    DB_SLOTS
-  end
-
   attr_accessor :id, :timestamp, :vehicle_id
 
   def initialize(id, vehicle_id = nil, timestamp = nil)

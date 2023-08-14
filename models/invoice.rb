@@ -6,15 +6,6 @@ require 'time'
 # Class for Invoice Model
 class Invoice < CustomOrm
   include ParkingLotContants
-
-  def self.doc
-    DB_INVOICES
-  end
-
-  def doc
-    DB_INVOICES
-  end
-
   def initialize(registration_no, entry_time)
     @registration_no = registration_no
     @entry_time = Time.parse(entry_time).to_i
