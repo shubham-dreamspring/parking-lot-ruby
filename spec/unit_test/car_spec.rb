@@ -1,59 +1,70 @@
 require_relative '../../models/Car'
 describe Car do
-  context 'on create' do
-    before(:each) do
-      Car.reset
-    end
-    after(:each) do
-      Car.reset
-    end
-    it 'will throw error if it is invalid registration no' do
-      car = Car.new('UPcd48')
+  before(:each) do
+    Car.reset
+  end
+  after(:each) do
+    Car.reset
+  end
+  describe '#create' do
+    context 'with invalid registration no' do
+      it 'will throw error' do
+        car = Car.new(registration_no: 'UPcd48')
 
-      expect { car.create }.to raise_error InvalidInput
+        expect { car.create }.to raise_error InvalidRegNo
+      end
     end
 
-    it 'will save' do
+    it 'will save it to db' do
       registration_no = 'UP12345678'
 
-      Car.new(registration_no).create
+      Car.new(registration_no: registration_no).create
 
-      expect(Car.find('registration_no', registration_no)).not_to be_nil
+      car = Car.find('registration_no', registration_no)
+      expect(car).not_to be_nil
     end
 
-    it 'will throw error if car is already existed' do
-      registration_no = 'WW91827364'
-      Car.new(registration_no).create
+    context 'with already parked car' do
+      it 'will throw error' do
+        registration_no = 'WW91827364'
+        Car.new(registration_no: registration_no).create
 
-      expect { Car.new(registration_no).create }.to raise_error AlreadyExist
+        expect { Car.new(registration_no: registration_no).create }.to raise_error AlreadyExist
+      end
     end
   end
-  context 'on validate' do
-    #context for registration No validation
-    it 'start with two alphabets' do
-      expect(Car.new('UP72123456').validate).to be_truthy
-      expect(Car.new('UP72asdfgh').validate).to be_truthy
-      expect(Car.new('Up323asd43').validate).to be_truthy
+  describe '#validate' do
+    context 'with invalid registration no'
+    it 'should start with two alphabets' do
+      car = Car.new(registration_no: 'U7212356')
+
+      expect { car.validate }.to raise_error InvalidRegNo
     end
 
     it 'should have length of 10' do
-      expect(Car.new('UP12345678').validate).to be_truthy
+      car1 = Car.new(registration_no: 'UP72125')
+      car2 = Car.new(registration_no: 'UP7212345dsfdfs')
+
+      expect { car1.validate }.to raise_error InvalidRegNo
+      expect { car2.validate }.to raise_error InvalidRegNo
     end
 
-    it 'should not permit special characters' do
-      expect { Car.new('up3-3asd43').validate }.to raise_error RuntimeError
-      expect { Car.new('ka323*sd43').validate }.to raise_error RuntimeError
-      expect { Car.new('23|323sd43').validate }.to raise_error RuntimeError
+    it 'should not have special characters' do
+      car1 = Car.new(registration_no: 'up3-3asd43')
+      car2 = Car.new(registration_no: 'ka323*sd43')
+      car3 = Car.new(registration_no: '23|323sd43')
+
+      expect { car1.validate }.to raise_error InvalidRegNo
+      expect { car2.validate }.to raise_error InvalidRegNo
+      expect { car3.validate }.to raise_error InvalidRegNo
     end
 
-    it 'should not permit spaces' do
-      expect { Car.new('ka323 sd43').validate }.to raise_error RuntimeError
+    it 'should not have spaces' do
+      car = Car.new(registration_no: 'ka323 sd43')
+
+      expect { car.validate }.to raise_error InvalidRegNo
     end
 
-    it 'should not have length more or less than 10' do
-      expect { Car.new('UP72asdfgh32324').validate }.to raise_error RuntimeError
-      expect { Car.new('72123456').validate }.to raise_error RuntimeError
-    end
   end
 end
 

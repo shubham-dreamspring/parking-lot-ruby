@@ -29,7 +29,7 @@ class ParkingLot
   end
 
   def self.unpark(car)
-    raise CarNotFound, 'Car is not parked' unless car.already_exist?
+    raise CarNotFound unless car.already_exist?
 
     car = Car.find('registration_no', car.registration_no)
     slot = Slot.find('vehicle_id', car.id)
@@ -38,7 +38,9 @@ class ParkingLot
     car_parked_time = slot.timestamp
     slot.vacant_slot
     Car.delete('id', car.id)
-    Invoice.new(registration_no: car.registration_no, entry_time: car_parked_time)
+    invoice = Invoice.new(registration_no: car.registration_no, entry_time: car_parked_time)
+    invoice.create
+    invoice
   end
 
   def self.parked_cars(sort_property = nil, limit = nil)

@@ -5,6 +5,7 @@ require_relative '../models/parking_lot'
 require_relative '../models/invoice'
 require_relative '../utils/custom_orm'
 require_relative '../app_constants'
+require_relative '../services/invoice_printer'
 # Controller class
 class Controller
   include ParkingLotConstants
@@ -29,7 +30,7 @@ class Controller
   def unpark(reg_no)
     car = Car.new(registration_no: reg_no)
     invoice = ParkingLot.unpark(car)
-    invoice.print_invoice
+    InvoicePrinter.execute(invoice)
     puts SUCCESS_UNPARK_CAR
 
   rescue RuntimeError => e
@@ -37,11 +38,12 @@ class Controller
   end
 
   def invoice(invoice_id)
-    return Invoice.find_all.map(&:print_invoice) if invoice_id.nil?
+    return Invoice.find_all.map { |invoice| InvoicePrinter.execute(invoice) } if invoice_id.nil?
 
     invoice = Invoice.find('id', invoice_id)
-    invoice&.print_invoice
     raise RecordNotFound, 'Invoice is not there with this id' if invoice.nil?
+
+    InvoicePrinter.execute(invoice)
   rescue RuntimeError => e
     puts e
   end

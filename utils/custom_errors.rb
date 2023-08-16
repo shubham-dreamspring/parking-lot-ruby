@@ -5,13 +5,13 @@ module CustomErrors
   include ParkingLotConstants
 
   class RecordNotFound < RuntimeError
-    def initialize(message = ERR_RECORD_NOT_FOUND)
+    def initialize(message = ParkingLotConstants::ERR_RECORD_NOT_FOUND)
       super(message)
     end
   end
 
   class InvalidInput < RuntimeError
-    def initialize(message = ERR_INVALID_INPUT)
+    def initialize(message = ParkingLotConstants::ERR_INVALID_INPUT)
       super(message)
     end
   end
@@ -29,32 +29,32 @@ module CustomErrors
   end
 
   class CarNotFound < RecordNotFound
-    def initialize(message = ERR_CAR_NOT_FOUND)
+    def initialize(message = ParkingLotConstants::ERR_CAR_NOT_FOUND)
       super(message)
     end
   end
 
   class NoEmptySlot < RecordNotFound
-    def initialize(message = ERR_NO_EMPTY_SLOTS)
+    def initialize(message = ParkingLotConstants::ERR_NO_EMPTY_SLOTS)
       super(message)
     end
 
   end
 
   class NoParkedCar < RecordNotFound
-    def initialize(message = ERR_CAR_NOT_FOUND)
+    def initialize(message = ParkingLotConstants::ERR_CAR_NOT_FOUND)
       super(message)
     end
   end
 
   class InvalidRegNo < InvalidInput
-    def initialize(message = ERR_INVALID_REGISTRATION_NO)
+    def initialize(message = ParkingLotConstants::ERR_INVALID_REGISTRATION_NO)
       super(message)
     end
   end
 
   class CarAlreadyParked < AlreadyExist
-    def initialize(message = ERR_CAR_ALREADY_PARKED)
+    def initialize(message = ParkingLotConstants::ERR_CAR_ALREADY_PARKED)
       super(message)
     end
   end
